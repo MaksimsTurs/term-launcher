@@ -1,9 +1,12 @@
 #ifndef H_LAUNCHER_INPUT
 #define H_LAUNCHER_INPUT
 
+#include "logging.h"
+
 #include <termios.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <errno.h>
 
 #define LAUNCHER_READ_BUFF_SIZE 	3
 

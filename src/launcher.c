@@ -1,7 +1,7 @@
 #include "launcher.h"
 
 static t_launcher_state launcher_state = { 
-	.selected_app = 1,
+	.selected_app = 0,
 	.is_running = 1
 };
 static const char* usr_paths[2] = { 
@@ -12,7 +12,8 @@ static const long long usr_paths_count = sizeof(usr_paths) / sizeof(usr_paths[0]
 
 void launcher_run_app()
 {
-	if(launcher_state.selected_app > launcher_state.finded_apps.size)
+	if(launcher_state.selected_app > launcher_state.finded_apps.size ||
+		 launcher_state.selected_app < 0)
 	{
 		LAUNCHER_LOG_AND_EXIT(-1, "Can not run unknown application!");
 	}
@@ -21,15 +22,26 @@ void launcher_run_app()
 	char* args[] = { app->name, NULL };
 	pid_t pid = fork();
 
+	if(pid < -1)
+	{
+		LAUNCHER_LOG_AND_EXIT(errno, "Can not create new process!");
+	}
+
 	if(pid == 0)
 	{
-		setsid();
+		if(setsid() == -1)
+		{
+			LAUNCHER_LOG_AND_EXIT(errno, "Can not create new session!");
+		}
 
     freopen("/dev/null", "r", stdin);
     freopen("/dev/null", "w", stdout);
     freopen("/dev/null", "w", stderr);
 		
-		execvp(app->name, args);
+		if(execvp(app->name, args) == -1)
+		{
+			LAUNCHER_LOG_AND_EXIT(errno, "Can not execute programm %s", app->name);
+		}
 	}
 
 	exit(0);
@@ -85,10 +97,7 @@ void launcher_process_input()
 				launcher_cursor_down();
 			break;
 			case LAUNCHER_KEY_ENTER:
-				if(launcher_state.selected_app >= 0)
-				{
-					launcher_run_app();
-				}
+				launcher_run_app();
 			break;
 			default:
 				if(ch == LAUNCHER_KEY_DEL)

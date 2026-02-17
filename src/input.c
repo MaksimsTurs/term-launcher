@@ -6,14 +6,30 @@ char launcher_read_char()
 	t_termios old_term = {0};
 	t_termios new_term = {0};
 
-	tcgetattr(STDIN_FILENO, &old_term);
+	if(tcgetattr(STDIN_FILENO, &old_term) == -1)
+	{
+		LAUNCHER_LOG_AND_EXIT(errno, "Can not get terminal attributes!");
+	}
+	
 	new_term = old_term;
 	new_term.c_lflag &= ~(ICANON | ECHO);
 
-	tcsetattr(STDIN_FILENO, TCSANOW, &new_term);
-	read(STDIN_FILENO, buff, LAUNCHER_READ_BUFF_SIZE);
+	if(tcsetattr(STDIN_FILENO, TCSANOW, &new_term) == -1)
+	{
+		LAUNCHER_LOG_AND_EXIT(errno, "Can not get terminal attributes!");
+	}
+
+	if(read(STDIN_FILENO, buff, LAUNCHER_READ_BUFF_SIZE) == -1)
+	{
+		LAUNCHER_LOG_AND_EXIT(errno, "Can not read characters into buffer!");
+	}
+
 	fflush(stdout);
-	tcsetattr(STDIN_FILENO, TCSANOW, &old_term);
+	
+	if(tcsetattr(STDIN_FILENO, TCSANOW, &old_term) == -1)
+	{
+		LAUNCHER_LOG_AND_EXIT(errno, "Can not set terminal attributes!");
+	}
 
 	// Chek is Arrow buttons are pressed.
 	if((buff[0] == 27 || buff[0] == 7) && buff[1] == 91)
