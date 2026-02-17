@@ -1,8 +1,8 @@
 #include "launcher.h"
 
-int main(void)
+int main(int argc, const char** argv)
 {
-	launcher_init();
+	launcher_init(argc, argv);
 	launcher_run();
 	launcher_destroy();
 

@@ -3,9 +3,12 @@
 	#include "render.h"
 	#include "app.h"
 	#include "utility.h"
+	#include "flags.h"
 
 	#include <stdlib.h>
 	#include <errno.h>
+	#include <unistd.h>
+	#include <signal.h>
 
 	#define LAUNCHER_KEY_DEL         	127
 	#define LAUNCHER_KEY_ESCAPE				27
@@ -16,18 +19,20 @@
 	#define LAUNCHER_KEY_ENTER       	10
 
 	typedef struct s_launcher_state {
-		unsigned char 	is_running;
+		unsigned char 		is_running;
 
-		t_input_buffer	searched_app;
+		t_input_buffer		searched_app;
 		
-		int				     	selected_app;
+		int				     		selected_app;
 		
-		t_apps				 	usr_apps;
-		t_apps 					finded_apps;
+		t_apps				 		usr_apps;
+		t_apps 						finded_apps;
+
+		t_launcher_flags 	flags;
 	} t_launcher_state;
 
 	// Core functions
-	void launcher_init();
+	void launcher_init(int argc, const char** argv);
 	void launcher_run();
 	void launcher_destroy();
 

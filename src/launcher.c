@@ -2,7 +2,8 @@
 
 static t_launcher_state launcher_state = { 
 	.selected_app = 0,
-	.is_running = 1
+	.is_running = 1,
+	.flags = {0}
 };
 static const char* usr_paths[2] = { 
 	"/usr/local/bin", 
@@ -44,11 +45,17 @@ void launcher_run_app()
 		}
 	}
 
+	if(launcher_state.flags.c)
+	{
+		kill(getppid(), SIGHUP);
+	}
+
 	exit(0);
 }
 
-void launcher_init()
+void launcher_init(int argc, const char** argv)
 {
+	launcher_set_flags(&launcher_state.flags, argc, argv);
 	launcher_init_apps(&launcher_state.usr_apps);
 	launcher_init_apps(&launcher_state.finded_apps);
 	launcher_collect_apps(usr_paths, usr_paths_count, &launcher_state.usr_apps);
@@ -58,12 +65,19 @@ void launcher_run()
 {
 	launcher_clear_screen();
 
-	while(launcher_state.is_running)
+	if(launcher_state.flags.h)
 	{
-		launcher_render();
-		launcher_process_input();
-		launcher_process_data();
+		launcher_print_flags();
 	}
+	else
+	{
+		while(launcher_state.is_running)
+		{
+			launcher_render();
+			launcher_process_input();
+			launcher_process_data();
+		}
+	}	
 }
 
 void launcher_destroy()
@@ -114,6 +128,7 @@ void launcher_process_input()
 
 void launcher_render()
 {
+	launcher_clear_screen();
 	LAUNCHER_RENDER_INPUT(launcher_state.searched_app.value);
 
 	for(int index = 0; index < launcher_state.finded_apps.size; index++)
