@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 #define LAUNCHER_LOG_AND_EXIT(code, message, ...) do { 	\
-	printf("\x1b[38;2;137;180;250m[app-launcher]:\x1b[0m " message "\n", ##__VA_ARGS__);	\
+	printf("\x1b[38;2;137;180;250m[app-launcher (%i)]:\x1b[0m " message "\n", code, ##__VA_ARGS__);	\
 	exit(code);																						\
 } while(0)
 
