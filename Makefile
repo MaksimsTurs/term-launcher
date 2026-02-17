@@ -1,4 +1,4 @@
-SRC_PA				:= src
+SRC_PATH			:= src
 INCLUDE_PATH	:= include
 OBJ_PATH			:= obj
 
