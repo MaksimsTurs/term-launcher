@@ -5,6 +5,7 @@
 	#include "utility.h"
 
 	#include <stdlib.h>
+	#include <errno.h>
 
 	#define LAUNCHER_KEY_DEL         	127
 	#define LAUNCHER_KEY_ESCAPE				27

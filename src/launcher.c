@@ -1,7 +1,7 @@
 #include "launcher.h"
 
 static t_launcher_state launcher_state = { 
-	.selected_app = 0,
+	.selected_app = 1,
 	.is_running = 1
 };
 static const char* usr_paths[2] = { 
@@ -12,6 +12,11 @@ static const long long usr_paths_count = sizeof(usr_paths) / sizeof(usr_paths[0]
 
 void launcher_run_app()
 {
+	if(launcher_state.selected_app > launcher_state.finded_apps.size)
+	{
+		LAUNCHER_LOG_AND_EXIT(-1, "Can not run unknown application!");
+	}
+
 	t_app* app = &launcher_state.finded_apps.items[launcher_state.selected_app];
 	char* args[] = { app->name, NULL };
 	pid_t pid = fork();
@@ -100,8 +105,6 @@ void launcher_process_input()
 
 void launcher_render()
 {
-	launcher_clear_screen();
-	
 	LAUNCHER_RENDER_INPUT(launcher_state.searched_app.value);
 
 	for(int index = 0; index < launcher_state.finded_apps.size; index++)
