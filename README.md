@@ -5,12 +5,13 @@ Simple terminal based application launcher for Linux, written in C.
 + [Todos](#todos)
 + [Documentation](#documentation)
     + [Installation](#installation)
-    + [Use](#use)
+    + [Usage](#usage)
     + [Keys](#keys)
 
 ## [Todos](#todos)
 - [ ] Color customization for input and list.
 - [ ] Flags that adds side effects (like auto close of terminal where launcher was executed).
+- [ ] Customization of direcotries in which applications should be searched.
 
 ## [Documentation](#documentation)
 ### [Installation](#installation)
@@ -25,7 +26,7 @@ make
 Make launcher runnable globaly ([how to make programm runnable globaly](https://unix.stackexchange.com/questions/3810/how-can-i-make-a-program-executable-from-everywhere)).
 
 ### [Use](#use)
-Run `launcher` in your terminal this will open a small input in which you can write the name of the application that you want to run, to select the application, use the arrow up/down keys to move the cursor.
+Run `launcher` in your terminal this will open a small input in which you can write the name of the application that you want to run, to select the application, use the arrow up/down keys to move the cursor. If you want that terminal in which you run the application to be closed, run `launcher` with the `-c` flag.
 ![example](./readme/1.png)
 > [!WARNING]
 > Term launche support only ASCII characters, special characters like German "ü", "ö" or "ä" are not supported!
