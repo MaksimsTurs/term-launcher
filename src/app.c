@@ -30,7 +30,7 @@ void launcher_collect_apps(const char** paths, int paths_length, t_apps* apps)
 		}
 		else
 		{
-			LAUNCHER_LOG_AND_EXIT(-1, "Can not open a directory %s!", paths[index]);
+			LAUNCHER_LOG_AND_EXIT(errno, "Can not open a directory %s!", paths[index]);
 		}
 
 		closedir(directory);
@@ -119,7 +119,7 @@ void launcher_init_apps(t_apps* apps)
 
 	if(apps->items == NULL)
 	{
-		LAUNCHER_LOG_AND_EXIT(-1, "Can not initialize memory for applications!");
+		LAUNCHER_LOG_AND_EXIT(errno, "Can not initialize memory for applications!");
 	}
 }
 
@@ -132,7 +132,7 @@ void launcher_realloc_apps(t_apps* apps)
 	
 	if(tmp == NULL)
 	{
-		LAUNCHER_LOG_AND_EXIT(-1, "Can not reallocate memory for applications!");
+		LAUNCHER_LOG_AND_EXIT(errno, "Can not reallocate memory for applications!");
 	}
 
 	apps->items = tmp;
