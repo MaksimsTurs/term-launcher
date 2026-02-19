@@ -1,5 +1,10 @@
 #include "styles.h"
 
+static char* DEFAULT_INPUT_FORMAT						= "Run » \x1b[0m%s\n";
+static char* DEFAULT_LIST_ITEM_FORMAT				= "%s\x1b[0m\n";
+static unsigned char DEFAULT_INPUT_FG[3] 		= { 137, 180, 250 };
+static unsigned char DEFAULT_SELECTED_FG[3]	= { 250, 179, 138 }; 
+
 void launcher_parse_styles(t_launcher_styles* styles)
 {
 	char* home_path = getenv("HOME");
@@ -24,13 +29,41 @@ void launcher_parse_styles(t_launcher_styles* styles)
 	LAUNCHER_ASSERT(res.ok == 0, "Can not open configuration file %s!", full_path);
 
 	styles->input_format	= launcher_parse_string("input.format",	&res);
-	
-	launcher_parse_color("input.bg",			(unsigned char*)&styles->input_bg, 			&res);
-	launcher_parse_color("input.fg",			(unsigned char*)&styles->input_fg, 			&res);
-	launcher_parse_color("selected.bg",		(unsigned char*)&styles->selected_bg, 	&res);
-	launcher_parse_color("selected.fg",		(unsigned char*)&styles->selected_fg, 	&res);
-	launcher_parse_color("unselected.bg",	(unsigned char*)&styles->unselected_bg, &res);
-	launcher_parse_color("unselected.fg",	(unsigned char*)&styles->unselected_fg, &res);
+	styles->input_bg 			= launcher_parse_color("input.bg",			&res);
+	styles->input_fg 			= launcher_parse_color("input.fg",			&res);
+
+	styles->selected_format = launcher_parse_string("selected.format", 	&res);
+	styles->selected_bg 		= launcher_parse_color("selected.bg",				&res);
+	styles->selected_fg 		= launcher_parse_color("selected.fg",				&res);
+
+	styles->unselected_format	= launcher_parse_string("unselected.format", 	&res);
+	styles->unselected_bg 		= launcher_parse_color("unselected.bg",				&res);
+	styles->unselected_fg 		= launcher_parse_color("unselected.fg",				&res);
+
+	if(styles->input_format == NULL)
+	{
+		styles->input_format = DEFAULT_INPUT_FORMAT;
+	}
+
+	if(styles->selected_format == NULL)
+	{
+		styles->selected_format = DEFAULT_LIST_ITEM_FORMAT;
+	}
+
+	if(styles->unselected_format == NULL)
+	{
+		styles->unselected_format = DEFAULT_LIST_ITEM_FORMAT;
+	}
+
+	if(styles->input_fg == NULL)
+	{
+		styles->input_fg = (unsigned char*)&DEFAULT_INPUT_FG;
+	}
+
+	if(styles->selected_fg == NULL)
+	{
+		styles->selected_fg = (unsigned char*)&DEFAULT_SELECTED_FG;
+	}
 
 	toml_free(res);
 }
@@ -47,23 +80,41 @@ char* launcher_parse_string(const char* path, toml_result_t* res)
 	return (char*)string.u.s;
 }
 
-void launcher_parse_color(const char* path, unsigned char* color, toml_result_t* res)
+unsigned char* launcher_parse_color(const char* path, toml_result_t* res)
 {
-	toml_datum_t color_values = toml_seek(res->toptab, path);
-	toml_datum_t element = {0};
+	toml_datum_t toml_array = toml_seek(res->toptab, path);
+	toml_datum_t toml_array_element = {0};
 	int color_value = 0;
+	unsigned char* color = NULL;
 
-	LAUNCHER_ASSERT(color_values.u.arr.size > 3, "Color should have only 3 elements for R, G and B!");
+	LAUNCHER_ASSERT(toml_array.type == TOML_ARRAY && toml_array.u.arr.size != 3, "Color should have only 3 elements for R, G and B!");
 
-	for(int index = 0; index < color_values.u.arr.size; index++)
+	if(toml_array.u.arr.size != 0)
 	{
-		element = color_values.u.arr.elem[index];
+		color = (unsigned char*)calloc(3, sizeof(unsigned char));
+		
+		LAUNCHER_ASSERT(color == NULL, "Can not initialize a memory for color value!");
+	}
 
-		LAUNCHER_ASSERT(element.type != TOML_INT64, "Element under index %i in path %s is not of type int8!", index, path);
+	for(int index = 0; index < toml_array.u.arr.size; index++)
+	{
+		toml_array_element = toml_array.u.arr.elem[index];
 
-		color_value = (int)element.u.int64;
+		LAUNCHER_ASSERT(toml_array_element.type != TOML_INT64, "Element under index %i in path %s is not of type int8!", index, path);
+
+		color_value = (int)toml_array_element.u.int64;
 
 		LAUNCHER_ASSERT(color_value > 255 || color_value < 0, "Invalid RGB value %i!", color_value);
 		color[index] = (unsigned char)color_value;
+	}
+
+	return color;
+}
+
+void launcher_apply_color(const char* location, const unsigned char* color)
+{
+	if(color)
+	{
+		printf("%s;%i;%i;%im", location, color[0], color[1], color[2]);
 	}
 }

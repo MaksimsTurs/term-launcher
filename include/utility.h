@@ -1,6 +1,8 @@
 #ifndef H_LAUNCHER_UTILITY
 #define H_LAUNCHER_UTILITY
 
+#include "styles.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -9,9 +11,6 @@
 #define LAUNCHER_KEY_ARROW_LEFT  	68
 
 #define LAUNCHER_RESET_STYLES			"\x1b[0m"
-
-#define LAUNCHER_BG		"\x1b[48;2;"
-#define LAUNCHER_FG		"\x1b[38;2;"
 
 #define LAUNCHER_RGB(r, g, b) #r ";" #g ";" #b "m"
 

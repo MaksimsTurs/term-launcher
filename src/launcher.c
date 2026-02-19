@@ -1,7 +1,7 @@
 #include "launcher.h"
 
 static t_launcher_state launcher_state = { 
-	.selected_app = 0,
+	.selected_app = -1,
 	.is_running = 1,
 	.flags = {0},
 	.styles = {0}
@@ -53,7 +53,7 @@ void launcher_init(int argc, const char** argv)
 
 void launcher_run()
 {
-	//launcher_clear_screen();
+	launcher_clear_screen();
 
 	if(launcher_state.flags.h)
 	{
@@ -61,12 +61,12 @@ void launcher_run()
 	}
 	else
 	{
-	// 	while(launcher_state.is_running)
-	// 	{
-	// 		launcher_render();
-	// 		launcher_process_input();
-	// 		launcher_process_data();
-	// 	}
+		while(launcher_state.is_running)
+		{
+			launcher_render();
+			launcher_process_input();
+			launcher_process_data();
+		}
 	}	
 }
 
@@ -119,17 +119,19 @@ void launcher_process_input()
 void launcher_render()
 {
 	launcher_clear_screen();
-	LAUNCHER_RENDER_INPUT(launcher_state.searched_app.value);
+	launcher_render_input(&launcher_state.styles, launcher_state.searched_app.value);
 
 	for(int index = 0; index < launcher_state.finded_apps.size; index++)
 	{
+		t_app* item = &launcher_state.finded_apps.items[index];
+
 		if(launcher_state.selected_app != index)
 		{
-			LAUNCHER_RENDER_UNSELECTED_APPLICATION(launcher_state.finded_apps.items[index]);
+			launcher_render_unselected_list_item(&launcher_state.styles, item->name);
 		}
 		else
 		{
-			LAUNCHER_RENDER_SELECTED_APPLICATION(launcher_state.finded_apps.items[index]);
+			launcher_render_selected_list_item(&launcher_state.styles, item->name);
 		}
 	}
 }
