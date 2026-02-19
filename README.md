@@ -67,8 +67,8 @@ Currently launcher supports following properties:
     bg = [150, 255, 50]
 ```
 **selected.fg**:\
-**selected.fg**:\
-**selected.fg**: Set the font color.
+**unselected.fg**:\
+**input.fg**: Set the font color.
 ```
 [input]
           R    G   B
