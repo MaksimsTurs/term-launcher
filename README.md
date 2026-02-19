@@ -40,17 +40,17 @@ Currently launcher supports following properties:
 
 **selected.format**:\
 **unselected.format**:\
-**input.format**: Set the custom print format, if you use custom format you need to reset the styles and adding the `\n` character yourself, this would be correct value
+**input.format**: Set the custom print format, if you use custom format you need to reset the styles and adding the `\n` character manually, this would be correct value
 ```
 [input]
     format = "Execute \x1b[0m(%s)\n"
-                                  ^- must be added yourself
+                                  ^- must be added manually
 [selected]
     format = "  » %s «  \x1b[0m\n"
-                                ^- must be added yourself
+                                ^- must be added manually
 [unselected]
     format = "%s\x1b[0m\n"
-                        ^- must be added yourslef
+                        ^- must be added manually
 ```
 **selected.bg**:\
 **unselected.bg**:\
