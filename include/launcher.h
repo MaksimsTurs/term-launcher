@@ -4,9 +4,9 @@
 	#include "app.h"
 	#include "utility.h"
 	#include "flags.h"
+	#include "styles.h"
 
 	#include <stdlib.h>
-	#include <errno.h>
 	#include <unistd.h>
 	#include <signal.h>
 
@@ -29,6 +29,8 @@
 		t_apps 						finded_apps;
 
 		t_launcher_flags 	flags;
+
+		t_launcher_styles styles;
 	} t_launcher_state;
 
 	// Core functions

@@ -1,5 +1,4 @@
 #include "app.h"
-#include "utility.h"
 
 void launcher_collect_apps(const char** paths, int paths_length, t_apps* apps)
 {
@@ -10,27 +9,22 @@ void launcher_collect_apps(const char** paths, int paths_length, t_apps* apps)
 	{
 		directory = opendir(paths[index]);
 
-		if(directory)
-		{
-			while((dirent = readdir(directory)) != NULL)
-			{
-				if(launcher_is_apps_full(apps))
-				{
-					launcher_realloc_apps(apps);
-				}
+		LAUNCHER_ASSERT(directory == NULL, "Can not open a directory %s!", paths[index]);
 
-				if(!launcher_is_ignored_path(*dirent))
-				{
-					apps->items[apps->size].name = strdup(dirent->d_name);
-					apps->items[apps->size].name_length = strlen(dirent->d_name);
-					apps->items[apps->size].equ = 0.0f;
-					apps->size++;
-				}
-			}
-		}
-		else
+		while((dirent = readdir(directory)) != NULL)
 		{
-			LAUNCHER_LOG_AND_EXIT(errno, "Can not open a directory %s!", paths[index]);
+			if(launcher_is_apps_full(apps))
+			{
+				launcher_realloc_apps(apps);
+			}
+
+			if(!launcher_is_ignored_path(*dirent))
+			{
+				apps->items[apps->size].name = strdup(dirent->d_name);
+				apps->items[apps->size].name_length = strlen(dirent->d_name);
+				apps->items[apps->size].equ = 0.0f;
+				apps->size++;
+			}
 		}
 
 		closedir(directory);
@@ -47,7 +41,7 @@ void launcher_filter(t_input_buffer* app_name, t_apps* source, t_apps* dist)
 	for(int index = 0; index < source->size; index++)
 	{
 		sum = launcher_compare_names(app_name->value, source->items[index].name, source->items[index].name_length);
-		
+
 		if(sum != 0)
 		{
 			equ = (float)sum / source->items[index].name_length;
@@ -117,10 +111,7 @@ void launcher_init_apps(t_apps* apps)
 	apps->capacity = LAUNCHER_APPS_DEFAULT_CAPACITY;
 	apps->items = (t_app*)malloc(sizeof(t_app) * apps->capacity);
 
-	if(apps->items == NULL)
-	{
-		LAUNCHER_LOG_AND_EXIT(errno, "Can not initialize memory for applications!");
-	}
+	LAUNCHER_ASSERT(apps->items == NULL, "Can not initialize memory for applications!");
 }
 
 void launcher_realloc_apps(t_apps* apps)
@@ -129,11 +120,8 @@ void launcher_realloc_apps(t_apps* apps)
 	
 	apps->capacity *= 2;
 	tmp = (t_app*)realloc(apps->items, sizeof(t_app) * apps->capacity);
-	
-	if(tmp == NULL)
-	{
-		LAUNCHER_LOG_AND_EXIT(errno, "Can not reallocate memory for applications!");
-	}
+
+	LAUNCHER_ASSERT(apps->items == NULL, "Can not reallocate memory for applications!");
 
 	apps->items = tmp;
 }

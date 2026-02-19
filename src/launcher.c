@@ -3,7 +3,8 @@
 static t_launcher_state launcher_state = { 
 	.selected_app = 0,
 	.is_running = 1,
-	.flags = {0}
+	.flags = {0},
+	.styles = {0}
 };
 static const char* usr_paths[2] = { 
 	"/usr/local/bin", 
@@ -13,36 +14,23 @@ static const long long usr_paths_count = sizeof(usr_paths) / sizeof(usr_paths[0]
 
 void launcher_run_app()
 {
-	if(launcher_state.selected_app > launcher_state.finded_apps.size ||
-		 launcher_state.selected_app < 0)
-	{
-		LAUNCHER_LOG_AND_EXIT(-1, "Can not run unknown application!");
-	}
+	LAUNCHER_ASSERT(!LAUNCHER_IN_ARR_BOUND(launcher_state.selected_app, launcher_state.finded_apps.size), "Can not run unknown application!");
 
 	t_app* app = &launcher_state.finded_apps.items[launcher_state.selected_app];
 	char* args[] = { app->name, NULL };
 	pid_t pid = fork();
 
-	if(pid < -1)
-	{
-		LAUNCHER_LOG_AND_EXIT(errno, "Can not create new process!");
-	}
+	LAUNCHER_ASSERT(pid == -1, "Can not create new process!");
 
 	if(pid == 0)
 	{
-		if(setsid() == -1)
-		{
-			LAUNCHER_LOG_AND_EXIT(errno, "Can not create new session!");
-		}
+		LAUNCHER_ASSERT(setsid() == -1, "Can not create new session!");
 
     freopen("/dev/null", "r", stdin);
     freopen("/dev/null", "w", stdout);
     freopen("/dev/null", "w", stderr);
 		
-		if(execvp(app->name, args) == -1)
-		{
-			LAUNCHER_LOG_AND_EXIT(errno, "Can not execute programm %s", app->name);
-		}
+		LAUNCHER_ASSERT(execvp(app->name, args) == -1, "Can not execute programm %s", app->name);
 	}
 
 	if(launcher_state.flags.c)
@@ -56,6 +44,8 @@ void launcher_run_app()
 void launcher_init(int argc, const char** argv)
 {
 	launcher_set_flags(&launcher_state.flags, argc, argv);
+	launcher_parse_styles(&launcher_state.styles);
+
 	launcher_init_apps(&launcher_state.usr_apps);
 	launcher_init_apps(&launcher_state.finded_apps);
 	launcher_collect_apps(usr_paths, usr_paths_count, &launcher_state.usr_apps);
@@ -63,7 +53,7 @@ void launcher_init(int argc, const char** argv)
 
 void launcher_run()
 {
-	launcher_clear_screen();
+	//launcher_clear_screen();
 
 	if(launcher_state.flags.h)
 	{
@@ -71,12 +61,12 @@ void launcher_run()
 	}
 	else
 	{
-		while(launcher_state.is_running)
-		{
-			launcher_render();
-			launcher_process_input();
-			launcher_process_data();
-		}
+	// 	while(launcher_state.is_running)
+	// 	{
+	// 		launcher_render();
+	// 		launcher_process_input();
+	// 		launcher_process_data();
+	// 	}
 	}	
 }
 

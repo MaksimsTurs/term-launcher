@@ -1,8 +1,8 @@
 #ifndef H_LAUNCHER_APP
 #define H_LAUNCHER_APP
 
-#include "logging.h"
 #include "input.h"
+#include "utility.h"
 
 #include <string.h>
 #include <dirent.h>
