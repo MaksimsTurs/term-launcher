@@ -3,7 +3,6 @@
 static t_launcher_state launcher_state = { 
 	.selected_app = -1,
 	.is_running = 1,
-	.flags = {0},
 };
 static const char* usr_paths[2] = { 
 	"/usr/local/bin", 

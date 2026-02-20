@@ -18,8 +18,6 @@
 		
 		t_apps				 		usr_apps;
 		t_apps 						finded_apps;
-
-		t_launcher_flags 	flags;
 	} t_launcher_state;
 
 	// Core functions
