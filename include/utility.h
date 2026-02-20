@@ -14,6 +14,8 @@
 #define LAUNCHER_KEY_ARROW_RIGHT 	67
 #define LAUNCHER_KEY_ARROW_LEFT  	68
 #define LAUNCHER_KEY_ENTER       	10
+#define LAUNCHER_ASCII_FG					"\x1b[48;2;"
+#define LAUNCHER_ASCII_BG					"\x1b[38;2;"
 #define LAUNCHER_ASCII_UNDERLINE  "\x1b[4m"
 #define LAUNCHER_ASCII_BOLD       "\x1b[1m"
 #define LAUNCHER_ASCII_RESET			"\x1b[0m"
@@ -24,11 +26,11 @@
 #define LAUNCHER_RGB_BLUE(color) 	(color >> 0) & 0xFF
 
 #define LAUNCHER_LOG_INFO(message, ...) do {\
-	printf(LAUNCHER_RGB_TO_ASCII(137, 180, 250) "[app-launcher]: " LAUNCHER_ASCII_RESET message "\n", ##__VA_ARGS__);\
+	printf(LAUNCHER_ASCII_BG LAUNCHER_RGB_TO_ASCII(137, 180, 250) "[app-launcher]: " LAUNCHER_ASCII_RESET message "\n", ##__VA_ARGS__);\
 } while(0)
 
 #define LAUNCHER_LOG_ERR(message, ...) do { \
-	printf(LAUNCHER_RGB_TO_ASCII(250, 180, 137) "[app-launcher (%i)]: " LAUNCHER_ASCII_RESET message "\n", errno, ##__VA_ARGS__);\
+	printf(LAUNCHER_ASCII_BG LAUNCHER_RGB_TO_ASCII(250, 180, 137) "[app-launcher (%i)]: " LAUNCHER_ASCII_RESET message "\n", errno, ##__VA_ARGS__);\
 } while(0)
 
 #define LAUNCHER_ASSERT(condition, message, ...) do {	\

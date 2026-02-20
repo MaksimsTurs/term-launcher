@@ -3,7 +3,6 @@
 	#include "render.h"
 	#include "app.h"
 	#include "utility.h"
-	#include "flags.h"
 
 	#include <stdlib.h>
 	#include <unistd.h>

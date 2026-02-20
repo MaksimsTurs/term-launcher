@@ -52,19 +52,12 @@ void launcher_run()
 {
 	launcher_clear_screen();
 
-	if(launcher_state.flags.h)
+	while(launcher_state.is_running)
 	{
-		launcher_print_flags();
+		launcher_render();
+		launcher_process_input();
+		launcher_process_data();
 	}
-	else
-	{
-		while(launcher_state.is_running)
-		{
-			launcher_render();
-			launcher_process_input();
-			launcher_process_data();
-		}
-	}	
 }
 
 void launcher_destroy()
