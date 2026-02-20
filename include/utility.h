@@ -1,25 +1,34 @@
 #ifndef H_LAUNCHER_UTILITY
 #define H_LAUNCHER_UTILITY
 
-#include "styles.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 
 #define LAUNCHER_KEY_ARROW_RIGHT 	67
 #define LAUNCHER_KEY_ARROW_LEFT  	68
+#define LAUNCHER_KEY_DEL         	127
+#define LAUNCHER_KEY_ESCAPE				27
+#define LAUNCHER_KEY_ARROW_UP    	65
+#define LAUNCHER_KEY_ARROW_DOWN  	66
+#define LAUNCHER_KEY_ARROW_RIGHT 	67
+#define LAUNCHER_KEY_ARROW_LEFT  	68
+#define LAUNCHER_KEY_ENTER       	10
+#define LAUNCHER_ASCII_UNDERLINE  "\x1b[4m"
+#define LAUNCHER_ASCII_BOLD       "\x1b[1m"
+#define LAUNCHER_ASCII_RESET			"\x1b[0m"
 
-#define LAUNCHER_RESET_STYLES			"\x1b[0m"
-
-#define LAUNCHER_RGB(r, g, b) #r ";" #g ";" #b "m"
+#define LAUNCHER_RGB_TO_ASCII(r, g, b) #r ";" #g ";" #b "m"
+#define LAUNCHER_RGB_RED(color) 	(color >> 16) & 0xFF
+#define LAUNCHER_RGB_GREEN(color) (color >> 8) & 0xFF
+#define LAUNCHER_RGB_BLUE(color) 	(color >> 0) & 0xFF
 
 #define LAUNCHER_LOG_INFO(message, ...) do {\
-	printf(LAUNCHER_FG LAUNCHER_RGB(137, 180, 250) "[app-launcher]: " LAUNCHER_RESET_STYLES message "\n", ##__VA_ARGS__);\
+	printf(LAUNCHER_RGB_TO_ASCII(137, 180, 250) "[app-launcher]: " LAUNCHER_ASCII_RESET message "\n", ##__VA_ARGS__);\
 } while(0)
 
 #define LAUNCHER_LOG_ERR(message, ...) do { \
-	printf(LAUNCHER_FG LAUNCHER_RGB(250, 180, 137) "[app-launcher (%i)]: " LAUNCHER_RESET_STYLES message "\n", errno, ##__VA_ARGS__);\
+	printf(LAUNCHER_RGB_TO_ASCII(250, 180, 137) "[app-launcher (%i)]: " LAUNCHER_ASCII_RESET message "\n", errno, ##__VA_ARGS__);\
 } while(0)
 
 #define LAUNCHER_ASSERT(condition, message, ...) do {	\

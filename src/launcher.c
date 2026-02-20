@@ -4,7 +4,6 @@ static t_launcher_state launcher_state = {
 	.selected_app = -1,
 	.is_running = 1,
 	.flags = {0},
-	.styles = {0}
 };
 static const char* usr_paths[2] = { 
 	"/usr/local/bin", 
@@ -17,6 +16,7 @@ void launcher_run_app()
 	LAUNCHER_ASSERT(!LAUNCHER_IN_ARR_BOUND(launcher_state.selected_app, launcher_state.finded_apps.size), "Can not run unknown application!");
 
 	t_app* app = &launcher_state.finded_apps.items[launcher_state.selected_app];
+	t_launcher_config* config = launcher_get_config();
 	char* args[] = { app->name, NULL };
 	pid_t pid = fork();
 
@@ -33,7 +33,7 @@ void launcher_run_app()
 		LAUNCHER_ASSERT(execvp(app->name, args) == -1, "Can not execute programm %s", app->name);
 	}
 
-	if(launcher_state.flags.c)
+	if(config->main.close_after_executing)
 	{
 		kill(getppid(), SIGHUP);
 	}
@@ -43,9 +43,7 @@ void launcher_run_app()
 
 void launcher_init(int argc, const char** argv)
 {
-	launcher_set_flags(&launcher_state.flags, argc, argv);
-	launcher_parse_styles(&launcher_state.styles);
-
+	launcher_load_config();
 	launcher_init_apps(&launcher_state.usr_apps);
 	launcher_init_apps(&launcher_state.finded_apps);
 	launcher_collect_apps(usr_paths, usr_paths_count, &launcher_state.usr_apps);
@@ -119,7 +117,8 @@ void launcher_process_input()
 void launcher_render()
 {
 	launcher_clear_screen();
-	launcher_render_input(&launcher_state.styles, launcher_state.searched_app.value);
+	launcher_render_input();
+	launcher_render_input_value(launcher_state.searched_app.value);
 
 	for(int index = 0; index < launcher_state.finded_apps.size; index++)
 	{
@@ -127,11 +126,11 @@ void launcher_render()
 
 		if(launcher_state.selected_app != index)
 		{
-			launcher_render_unselected_list_item(&launcher_state.styles, item->name);
+			launcher_render_unselected_item(item->name);
 		}
 		else
 		{
-			launcher_render_selected_list_item(&launcher_state.styles, item->name);
+			launcher_render_selected_item(item->name);
 		}
 	}
 }

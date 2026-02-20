@@ -4,19 +4,10 @@
 	#include "app.h"
 	#include "utility.h"
 	#include "flags.h"
-	#include "styles.h"
 
 	#include <stdlib.h>
 	#include <unistd.h>
 	#include <signal.h>
-
-	#define LAUNCHER_KEY_DEL         	127
-	#define LAUNCHER_KEY_ESCAPE				27
-	#define LAUNCHER_KEY_ARROW_UP    	65
-	#define LAUNCHER_KEY_ARROW_DOWN  	66
-	#define LAUNCHER_KEY_ARROW_RIGHT 	67
-	#define LAUNCHER_KEY_ARROW_LEFT  	68
-	#define LAUNCHER_KEY_ENTER       	10
 
 	typedef struct s_launcher_state {
 		unsigned char 		is_running;
@@ -29,8 +20,6 @@
 		t_apps 						finded_apps;
 
 		t_launcher_flags 	flags;
-
-		t_launcher_styles styles;
 	} t_launcher_state;
 
 	// Core functions
